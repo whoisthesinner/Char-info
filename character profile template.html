@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>캐릭터 프로필 템플릿</title>
+<style>
+  /* ============================================
+     색상 변수 - 여기서 전체 톤을 한번에 관리
+     accent : 기본 포인트색 (성격/이능력 라벨)
+     accent2 : 두 번째 포인트색 (커리어 라벨 - 예: 골드)
+     danger : 경고/리스크 박스 색
+     dark-bg : 어두운 배경
+     light-bg : 밝은 배경 (아이보리)
+     ============================================ */
+  :root {
+    --accent: #3f9e8e;
+    --accent2: #a9812f;
+    --danger: #c0503c;
+    --dark-bg: #0d1210;
+    --light-bg: #f2ede3;
+    --text-dark: #1b1b1b;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+  }
+  .card {
+    width: 900px;
+    max-width: 100%;
+    background: var(--dark-bg);
+    overflow: hidden;
+  }
+
+  /* ---------- 최상단 PROFILE 바 ---------- */
+  .page-header {
+    background: var(--dark-bg);
+    text-align: center;
+    padding: 28px 0 20px;
+    border-bottom: 4px solid var(--accent);
+  }
+  .page-header span {
+    color: #fff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 14px;
+  }
+
+  /* ---------- 히어로: 왼쪽 이미지 + 오른쪽 텍스트 ---------- */
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .hero-img {
+    flex: 1 1 380px;
+    min-height: 480px;
+    background: #333 center/cover no-repeat;
+    /* 아래 url()에 이미지 경로 넣기. 예: images/portrait.jpg */
+    background-image: url('images/portrait.jpg');
+  }
+  .hero-info {
+    flex: 1 1 380px;
+    background: var(--dark-bg);
+    color: #fff;
+    padding: 44px 36px;
+  }
+  .hero-info h1 {
+    font-size: 44px;
+    line-height: 1.05;
+    margin: 0 0 20px;
+    font-weight: 900;
+    text-shadow: 2px 2px 0 var(--accent);
+  }
+  .divider {
+    width: 60px;
+    height: 5px;
+    background: var(--accent);
+    margin-bottom: 20px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .tag {
+    padding: 9px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+  .tag.filled { background: var(--accent); color: #0d1210; }
+  .hero-info p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #e7e7e7;
+    margin: 0;
+  }
+
+  /* ---------- 공통 섹션 ---------- */
+  .section { padding: 40px 36px; }
+  .section.light { background: var(--light-bg); }
+  .section.white { background: #ffffff; }
+
+  .label {
+    display: inline-block;
+    background: var(--accent);
+    color: #0d1210;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    padding: 6px 14px;
+    margin-bottom: 16px;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+  }
+  .label.gold { background: var(--accent2); }
+
+  .section h2 {
+    font-size: 26px;
+    margin: 0 0 18px;
+    color: var(--text-dark);
+  }
+  .section p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    margin: 0 0 14px;
+  }
+
+  /* ---------- 이능력(ABILITY) 섹션: 배경 이미지 + 그라디언트 ---------- */
+  .ability {
+    position: relative;
+    background: #274b44 center/cover no-repeat;
+    /* 아래 url()에 이능력용 배경 이미지 경로 넣기 */
+    background-image:
+      linear-gradient(100deg, rgba(13,18,16,0.92) 30%, rgba(13,18,16,0.35) 100%),
+      url('images/ability_bg.jpg');
+    color: #fff;
+    padding: 44px 36px;
+  }
+  .ability .sub-label {
+    color: #d9c07a;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .ability .ability-name {
+    font-size: 46px;
+    font-weight: 900;
+    margin: 0 0 18px;
+  }
+  .ability p { color: #e7e7e7; }
+  .risk-box {
+    border: 2px solid var(--danger);
+    background: rgba(0,0,0,0.3);
+    padding: 20px 22px;
+    margin-top: 22px;
+  }
+  .risk-box .label {
+    background: var(--danger);
+    color: #fff;
+  }
+  .risk-box p { color: #f1dcd6; margin: 0; }
+
+  /* ---------- 반응형: 좁은 화면에서 히어로 세로 쌓기 ---------- */
+  @media (max-width: 600px) {
+    .hero-img { min-height: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ========== 최상단 PROFILE 바 ========== -->
+  <div class="page-header"><span>PROFILE</span></div>
+
+  <!-- ========== 히어로: 이미지 + 기본정보 ========== -->
+  <div class="hero">
+    <div class="hero-img"></div> <!-- images/portrait.jpg 경로에 이미지 넣기 -->
+    <div class="hero-info">
+      <h1>CHARACTER<br>NAME</h1>
+      <div class="divider"></div>
+      <div class="tags">
+        <span class="tag">00세</span>
+        <span class="tag">성별</span>
+        <span class="tag">소속/직책</span>
+        <!-- 필요한 만큼 span.tag 복붙 -->
+      </div>
+      <p>외형 설명. 키, 체형, 머리색, 눈동자 색, 인상, 평소 옷차림 등을 서술합니다.</p>
+    </div>
+  </div>
+
+  <!-- ========== 성격 섹션 ========== -->
+  <div class="section light">
+    <span class="label">PERSONALITY</span>
+    <h2>성격</h2>
+    <p>성격 설명을 여기에 적습니다.</p>
+  </div>
+
+  <!-- ========== 이능력 섹션 (배경이미지+그라디언트+리스크박스) ========== -->
+  <div class="ability">
+    <span class="label">ABILITY</span>
+    <div class="sub-label">이 능 력</div>
+    <div class="ability-name">SKILL NAME</div>
+    <p>능력에 대한 설명을 여기에 적습니다.</p>
+
+    <div class="risk-box">
+      <span class="label">RISK</span>
+      <p>능력의 위험성, 부작용, 한계 등을 여기에 적습니다.</p>
+    </div>
+  </div>
+
+  <!-- ========== 커리어 & 디테일 섹션 (다른 라벨 색상 예시) ========== -->
+  <div class="section white">
+    <span class="label gold">CAREER &amp; DETAILS</span>
+    <h2>커리어</h2>
+    <p>첫 번째 문단 내용.</p>
+    <p>두 번째 문단 내용. p 태그를 계속 추가해서 문단을 늘릴 수 있습니다.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
