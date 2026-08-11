@@ -13,7 +13,6 @@
     --light-bg: #f2ede3;     /* 아이보리 배경 (성격 섹션, 상단 줄) */
     --section-bg: #F6F3EB;   /* 커리어 섹션 배경 (흰색 아님) */
     --text-dark: #1b1b1b;
-    --name-shadow: #3f9e8e;  /* 캐릭터 이름 그림자 색 */
   }
 
   * { box-sizing: border-box; }
@@ -69,7 +68,7 @@
     background: var(--dark-bg); text-align: center; padding: 28px 0 20px;
     border-bottom: 4px solid var(--accent);
   }
-  .page-header span { color: #fff; font-size: 26px; font-weight: 800; letter-spacing: 14px; }
+  .page-header span { color: var(--accent); font-size: 26px; font-weight: 800; letter-spacing: 14px; }
 
   .hero { display: flex; flex-wrap: wrap; }
 
@@ -101,7 +100,6 @@
   .hero-info { flex: 1 1 380px; background: var(--dark-bg); color: #fff; padding: 44px 36px; }
   .hero-info h1 {
     font-size: 44px; line-height: 1.08; margin: 0 0 20px; font-weight: 900;
-    text-shadow: 4px 4px 0 var(--name-shadow);
     white-space: pre-wrap;
   }
   .divider { width: 60px; height: 5px; background: var(--accent); margin-bottom: 20px; }
@@ -158,8 +156,8 @@
   .ability .sub-label { color: #d9c07a; font-size: 14px; letter-spacing: 2px; margin: 0 0 6px; }
   .ability .ability-name { font-size: 46px; font-weight: 900; margin: 0 0 18px; }
   .ability p { color: #e7e7e7; }
-  .risk-box { margin-top: 22px; padding: 0; border: none; background: none; }
-  .risk-box .label { background: var(--danger); color: #fff; }
+  .risk-box { margin-top: 22px; padding: 20px 22px; border: 2px solid var(--danger); background: rgba(0,0,0,0.3); }
+  .risk-box .label { background: none; color: var(--danger); box-shadow: none; padding: 0; letter-spacing: 3px; }
   .risk-box p { color: #f1dcd6; margin: 0; }
 
   @media (max-width: 600px) {
@@ -194,7 +192,6 @@
     <div class="color-field"><label>어두운 배경</label><input type="color" class="color-input" data-var="--dark-bg" value="#0d1210"></div>
     <div class="color-field"><label>아이보리 배경</label><input type="color" class="color-input" data-var="--light-bg" value="#f2ede3"></div>
     <div class="color-field"><label>커리어 섹션 배경</label><input type="color" class="color-input" data-var="--section-bg" value="#f6f3eb"></div>
-    <div class="color-field"><label>이름 그림자</label><input type="color" class="color-input" data-var="--name-shadow" value="#3f9e8e"></div>
   </div>
 
   <div class="card" id="card">
