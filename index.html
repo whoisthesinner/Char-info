@@ -6,12 +6,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root {
-    --accent: #3f9e8e;
-    --accent2: #a9812f;
-    --danger: #c0503c;
-    --dark-bg: #0d1210;
-    --light-bg: #f2ede3;
+    --accent: #3f9e8e;       /* 포인트 색 (성격/이능력 라벨, 태그, 언더라인) */
+    --accent2: #a9812f;      /* 골드 포인트 (커리어 라벨) */
+    --danger: #c0503c;       /* 경고색 (RISK) */
+    --dark-bg: #0d1210;      /* 어두운 배경 */
+    --light-bg: #f2ede3;     /* 아이보리 배경 (성격 섹션, 상단 줄) */
+    --section-bg: #F6F3EB;   /* 커리어 섹션 배경 (흰색 아님) */
     --text-dark: #1b1b1b;
+    --name-shadow: #3f9e8e;  /* 캐릭터 이름 그림자 색 */
   }
 
   * { box-sizing: border-box; }
@@ -27,28 +29,33 @@
 
   /* ---------- 상단 툴바 ---------- */
   .toolbar {
-    width: 900px;
-    max-width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-    padding: 0 4px;
-    gap: 10px;
-    flex-wrap: wrap;
+    width: 900px; max-width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; padding: 0 4px; gap: 10px; flex-wrap: wrap;
   }
   .toolbar .hint { color: #9a9a9a; font-size: 13px; }
-  .save-btn {
-    background: var(--accent);
-    color: #0d1210;
-    border: none;
-    font-weight: 800;
-    font-size: 15px;
-    padding: 12px 22px;
-    cursor: pointer;
-    border-radius: 4px;
+  .btn-group { display: flex; gap: 8px; }
+  .save-btn, .toggle-btn {
+    border: none; font-weight: 800; font-size: 14px;
+    padding: 11px 18px; cursor: pointer; border-radius: 4px;
   }
-  .save-btn:active { opacity: 0.8; }
+  .save-btn { background: var(--accent); color: #0d1210; }
+  .toggle-btn { background: #333; color: #eee; }
+  .save-btn:active, .toggle-btn:active { opacity: 0.8; }
+
+  /* ---------- 색상 커스터마이즈 패널 ---------- */
+  .color-panel {
+    width: 900px; max-width: 100%;
+    background: #242424; border: 1px solid #3a3a3a;
+    padding: 16px 20px; margin-bottom: 14px; border-radius: 6px;
+    display: none; flex-wrap: wrap; gap: 16px 22px;
+  }
+  .color-panel.open { display: flex; }
+  .color-field { display: flex; align-items: center; gap: 8px; }
+  .color-field label { color: #ccc; font-size: 13px; }
+  .color-field input[type="color"] {
+    width: 34px; height: 34px; border: none; padding: 0; border-radius: 4px; cursor: pointer; background: none;
+  }
 
   .card { width: 900px; max-width: 100%; background: var(--dark-bg); overflow: hidden; }
 
@@ -65,44 +72,59 @@
   .page-header span { color: #fff; font-size: 26px; font-weight: 800; letter-spacing: 14px; }
 
   .hero { display: flex; flex-wrap: wrap; }
+
+  /* ---------- 인물 사진 (레이어 구조: 확대/위치 조절용) ---------- */
   .hero-img {
-    flex: 1 1 380px;
-    min-height: 480px;
+    flex: 1 1 380px; min-height: 480px;
+    position: relative; overflow: hidden; background: #333;
+  }
+  .img-layer {
+    position: absolute; inset: 0;
     background: #333 center/cover no-repeat;
-    position: relative;
+  }
+  .img-controls {
+    position: absolute; bottom: 14px; left: 14px; z-index: 2;
+    display: flex; flex-direction: column; gap: 8px;
+    background: rgba(0,0,0,0.55); padding: 10px; border-radius: 6px;
+    width: 190px;
   }
   .img-upload-btn {
-    position: absolute;
-    bottom: 14px; left: 14px;
-    background: rgba(0,0,0,0.65);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 9px 14px;
-    border-radius: 4px;
-    cursor: pointer;
+    background: rgba(255,255,255,0.12); color: #fff; font-size: 13px; font-weight: 700;
+    padding: 8px 10px; border-radius: 4px; cursor: pointer; text-align: center;
     border: 1px solid rgba(255,255,255,0.4);
   }
   .img-upload-btn input { display: none; }
+  .slider-row { display: flex; align-items: center; gap: 6px; }
+  .slider-row span { color: #ddd; font-size: 11px; width: 40px; }
+  .slider-row input[type="range"] { flex: 1; }
 
   .hero-info { flex: 1 1 380px; background: var(--dark-bg); color: #fff; padding: 44px 36px; }
   .hero-info h1 {
-    font-size: 44px; line-height: 1.05; margin: 0 0 20px; font-weight: 900;
-    text-shadow: 2px 2px 0 var(--accent); white-space: pre-wrap;
+    font-size: 44px; line-height: 1.08; margin: 0 0 20px; font-weight: 900;
+    text-shadow: 4px 4px 0 var(--name-shadow);
+    white-space: pre-wrap;
   }
   .divider { width: 60px; height: 5px; background: var(--accent); margin-bottom: 20px; }
+
   .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; align-items: center; }
   .tag-wrap { position: relative; display: inline-flex; align-items: center; }
   .tag {
-    padding: 9px 26px 9px 16px;
-    font-weight: 700; font-size: 14px;
-    border: 2px solid var(--accent); color: var(--accent);
+    padding: 9px 26px 9px 16px; font-weight: 700; font-size: 14px;
+    border: 2px solid var(--accent); color: var(--accent); background: transparent;
+  }
+  .tag.filled { background: var(--accent); color: #0d1210; }
+  .tag-fill {
+    position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: inherit; cursor: pointer;
+    font-size: 12px; padding: 2px; opacity: 0.8;
   }
   .tag-remove {
     position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
     background: none; border: none; color: var(--accent); cursor: pointer;
     font-size: 14px; font-weight: 900; line-height: 1; padding: 2px;
   }
+  .tag.filled ~ .tag-remove,
+  .tag-wrap:has(.tag.filled) .tag-remove { color: #0d1210; }
   .add-tag-btn {
     border: 2px dashed #555; color: #999; background: none;
     padding: 9px 14px; font-size: 14px; cursor: pointer; font-weight: 700;
@@ -111,34 +133,32 @@
 
   .section { padding: 40px 36px; }
   .section.light { background: var(--light-bg); }
-  .section.white { background: #ffffff; }
+  .section.alt-bg { background: var(--section-bg); }
 
   .label {
     display: inline-block; background: var(--accent); color: #0d1210;
     font-size: 12px; font-weight: 800; letter-spacing: 3px; padding: 6px 14px;
-    margin-bottom: 16px; box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+    margin-bottom: 16px; box-shadow: 4px 4px 0 #000;
   }
   .label.gold { background: var(--accent2); }
 
   .section h2 { font-size: 26px; margin: 0 0 18px; color: var(--text-dark); }
   .section p { font-size: 15px; line-height: 1.8; color: #333; margin: 0 0 14px; }
 
-  .ability {
-    position: relative;
-    background: #274b44 center/cover no-repeat;
-    color: #fff; padding: 44px 36px;
+  /* ---------- 이능력 섹션 ---------- */
+  .ability { position: relative; overflow: hidden; color: #fff; padding: 44px 36px; }
+  .ability .img-layer { background-color: #274b44; }
+  .ability-overlay {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(100deg, rgba(13,18,16,0.72) 30%, rgba(13,18,16,0.15) 100%);
   }
-  .ability::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(100deg, rgba(13,18,16,0.92) 30%, rgba(13,18,16,0.35) 100%);
-    pointer-events: none;
-  }
-  .ability > * { position: relative; z-index: 1; }
-  .ability .sub-label { color: #d9c07a; font-size: 14px; letter-spacing: 2px; margin-bottom: 6px; }
+  .ability-content { position: relative; z-index: 2; }
+  .ability .img-controls { top: 14px; bottom: auto; }
+  .ability .label { margin-bottom: 4px; box-shadow: 4px 4px 0 #000; }
+  .ability .sub-label { color: #d9c07a; font-size: 14px; letter-spacing: 2px; margin: 0 0 6px; }
   .ability .ability-name { font-size: 46px; font-weight: 900; margin: 0 0 18px; }
   .ability p { color: #e7e7e7; }
-  .risk-box { border: 2px solid var(--danger); background: rgba(0,0,0,0.3); padding: 20px 22px; margin-top: 22px; }
+  .risk-box { margin-top: 22px; padding: 0; border: none; background: none; }
   .risk-box .label { background: var(--danger); color: #fff; }
   .risk-box p { color: #f1dcd6; margin: 0; }
 
@@ -148,8 +168,10 @@
   }
 
   .capturing .toolbar,
-  .capturing .img-upload-btn,
+  .capturing .color-panel,
+  .capturing .img-controls,
   .capturing .tag-remove,
+  .capturing .tag-fill,
   .capturing .add-tag-btn {
     display: none !important;
   }
@@ -158,8 +180,21 @@
 <body>
 
   <div class="toolbar">
-    <span class="hint">텍스트를 탭하면 수정, 사진 버튼으로 이미지 변경</span>
-    <button class="save-btn" onclick="saveAsPng()">PNG로 저장</button>
+    <span class="hint">텍스트 탭하면 수정 · 사진/색상은 버튼으로 조절</span>
+    <div class="btn-group">
+      <button class="toggle-btn" onclick="document.querySelector('.color-panel').classList.toggle('open')">색상 설정</button>
+      <button class="save-btn" onclick="saveAsPng()">PNG로 저장</button>
+    </div>
+  </div>
+
+  <div class="color-panel">
+    <div class="color-field"><label>포인트색</label><input type="color" class="color-input" data-var="--accent" value="#3f9e8e"></div>
+    <div class="color-field"><label>골드 포인트</label><input type="color" class="color-input" data-var="--accent2" value="#a9812f"></div>
+    <div class="color-field"><label>경고색(RISK)</label><input type="color" class="color-input" data-var="--danger" value="#c0503c"></div>
+    <div class="color-field"><label>어두운 배경</label><input type="color" class="color-input" data-var="--dark-bg" value="#0d1210"></div>
+    <div class="color-field"><label>아이보리 배경</label><input type="color" class="color-input" data-var="--light-bg" value="#f2ede3"></div>
+    <div class="color-field"><label>커리어 섹션 배경</label><input type="color" class="color-input" data-var="--section-bg" value="#f6f3eb"></div>
+    <div class="color-field"><label>이름 그림자</label><input type="color" class="color-input" data-var="--name-shadow" value="#3f9e8e"></div>
   </div>
 
   <div class="card" id="card">
@@ -168,20 +203,31 @@
     <div class="page-header"><span contenteditable="true">PROFILE</span></div>
 
     <div class="hero">
-      <div class="hero-img" id="portraitImg">
-        <label class="img-upload-btn">
-          사진 선택
-          <input type="file" accept="image/*" onchange="setImage(event, 'portraitImg')">
-        </label>
+      <div class="hero-img">
+        <div class="img-layer" id="portraitImg"></div>
+        <div class="img-controls">
+          <label class="img-upload-btn">
+            사진 선택
+            <input type="file" accept="image/*" onchange="setImage(event, 'portraitImg')">
+          </label>
+          <div class="slider-row">
+            <span>확대</span>
+            <input type="range" min="100" max="250" value="100" oninput="setZoom('portraitImg', this.value)">
+          </div>
+          <div class="slider-row">
+            <span>위치</span>
+            <input type="range" min="0" max="100" value="50" oninput="setPosY('portraitImg', this.value)">
+          </div>
+        </div>
       </div>
       <div class="hero-info">
         <h1 contenteditable="true">CHARACTER
 NAME</h1>
         <div class="divider"></div>
         <div class="tags" id="tagList">
-          <span class="tag-wrap"><span class="tag" contenteditable="true">00세</span><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
-          <span class="tag-wrap"><span class="tag" contenteditable="true">성별</span><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
-          <span class="tag-wrap"><span class="tag" contenteditable="true">소속/직책</span><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
+          <span class="tag-wrap"><span class="tag" contenteditable="true">00세</span><button class="tag-fill" onclick="toggleFill(this)">◐</button><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
+          <span class="tag-wrap"><span class="tag" contenteditable="true">성별</span><button class="tag-fill" onclick="toggleFill(this)">◐</button><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
+          <span class="tag-wrap"><span class="tag" contenteditable="true">소속/직책</span><button class="tag-fill" onclick="toggleFill(this)">◐</button><button class="tag-remove" onclick="this.parentElement.remove()">×</button></span>
           <button class="add-tag-btn" onclick="addTag()">+ 태그</button>
         </div>
         <p contenteditable="true">외형 설명. 키, 체형, 머리색, 눈동자 색, 인상, 평소 옷차림 등을 서술합니다.</p>
@@ -194,23 +240,37 @@ NAME</h1>
       <p contenteditable="true">성격 설명을 여기에 적습니다.</p>
     </div>
 
-    <div class="ability" id="abilityBg">
-      <label class="img-upload-btn" style="top:14px; bottom:auto;">
-        배경 사진 선택
-        <input type="file" accept="image/*" onchange="setImage(event, 'abilityBg')">
-      </label>
-      <span class="label" contenteditable="true">ABILITY</span>
-      <div class="sub-label" contenteditable="true">이 능 력</div>
-      <div class="ability-name" contenteditable="true">SKILL NAME</div>
-      <p contenteditable="true">능력에 대한 설명을 여기에 적습니다.</p>
+    <div class="ability">
+      <div class="img-layer" id="abilityBg"></div>
+      <div class="ability-overlay"></div>
+      <div class="img-controls">
+        <label class="img-upload-btn">
+          배경 사진 선택
+          <input type="file" accept="image/*" onchange="setImage(event, 'abilityBg')">
+        </label>
+        <div class="slider-row">
+          <span>확대</span>
+          <input type="range" min="100" max="250" value="100" oninput="setZoom('abilityBg', this.value)">
+        </div>
+        <div class="slider-row">
+          <span>위치</span>
+          <input type="range" min="0" max="100" value="50" oninput="setPosY('abilityBg', this.value)">
+        </div>
+      </div>
+      <div class="ability-content">
+        <span class="label" contenteditable="true">ABILITY</span>
+        <div class="sub-label" contenteditable="true">이 능 력</div>
+        <div class="ability-name" contenteditable="true">SKILL NAME</div>
+        <p contenteditable="true">능력에 대한 설명을 여기에 적습니다.</p>
 
-      <div class="risk-box">
-        <span class="label" contenteditable="true">RISK</span>
-        <p contenteditable="true">능력의 위험성, 부작용, 한계 등을 여기에 적습니다.</p>
+        <div class="risk-box">
+          <span class="label" contenteditable="true">RISK</span>
+          <p contenteditable="true">능력의 위험성, 부작용, 한계 등을 여기에 적습니다.</p>
+        </div>
       </div>
     </div>
 
-    <div class="section white">
+    <div class="section alt-bg">
       <span class="label gold" contenteditable="true">CAREER &amp; DETAILS</span>
       <h2 contenteditable="true">커리어</h2>
       <p contenteditable="true">첫 번째 문단 내용.</p>
@@ -225,29 +285,47 @@ function setImage(event, targetId) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function (e) {
-    document.getElementById(targetId).style.backgroundImage =
-      "linear-gradient(100deg, rgba(13,18,16,0.92) 30%, rgba(13,18,16,0.35) 100%), url('" + e.target.result + "')";
-    // 인물사진(portraitImg)은 그라디언트 없이 순수 이미지로
-    if (targetId === 'portraitImg') {
-      document.getElementById(targetId).style.backgroundImage = "url('" + e.target.result + "')";
-    }
+    const el = document.getElementById(targetId);
+    el.style.backgroundImage = "url('" + e.target.result + "')";
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center 50%";
   };
   reader.readAsDataURL(file);
+}
+
+function setZoom(targetId, val) {
+  document.getElementById(targetId).style.backgroundSize = val + "%";
+}
+function setPosY(targetId, val) {
+  const el = document.getElementById(targetId);
+  const currentSize = el.style.backgroundSize || "cover";
+  el.style.backgroundPosition = "center " + val + "%";
+}
+
+function toggleFill(btn) {
+  btn.parentElement.querySelector('.tag').classList.toggle('filled');
 }
 
 function addTag() {
   const wrap = document.createElement('span');
   wrap.className = 'tag-wrap';
-  wrap.innerHTML = '<span class="tag" contenteditable="true">새 태그</span><button class="tag-remove" onclick="this.parentElement.remove()">×</button>';
+  wrap.innerHTML = '<span class="tag" contenteditable="true">새 태그</span><button class="tag-fill" onclick="toggleFill(this)">◐</button><button class="tag-remove" onclick="this.parentElement.remove()">×</button>';
   document.getElementById('tagList').insertBefore(wrap, document.querySelector('.add-tag-btn'));
 }
+
+// 색상 패널 <-> CSS 변수 연결
+document.querySelectorAll('.color-input').forEach(function (inp) {
+  inp.addEventListener('input', function () {
+    document.documentElement.style.setProperty(inp.dataset.var, inp.value);
+  });
+});
 
 function saveAsPng() {
   const card = document.getElementById('card');
   document.body.classList.add('capturing');
 
   html2canvas(card, {
-    backgroundColor: '#0d1210',
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--dark-bg').trim(),
     scale: 2,
     useCORS: true
   }).then(function (canvas) {
